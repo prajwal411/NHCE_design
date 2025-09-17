@@ -24,7 +24,7 @@ const mockEvents = [
     venue: "Tech Hub SF, 123 Market Street",
     organizer: {
       name: "Bay Area Tech Indians",
-      avatar: "/placeholder-logo.png",
+      avatar: "/tech-community-logo.png",
       verified: true,
     },
     attendees: 156,
@@ -32,7 +32,7 @@ const mockEvents = [
     price: "Free",
     category: "Tech",
     tags: ["Networking", "Diwali", "Technology"],
-    image: "/placeholder.jpg",
+    image: "/diwali-tech-mixer.jpg",
     featured: true,
   },
   {
@@ -46,7 +46,7 @@ const mockEvents = [
     venue: "Cultural Center, 456 Fremont Blvd",
     organizer: {
       name: "Classical Arts Society",
-      avatar: "/placeholder-logo.png",
+      avatar: "/cultural-society-logo.png",
       verified: true,
     },
     attendees: 45,
@@ -54,7 +54,7 @@ const mockEvents = [
     price: "$25",
     category: "Culture",
     tags: ["Dance", "Classical", "Workshop"],
-    image: "/placeholder.jpg",
+    image: "/bharatanatyam-workshop.jpg",
     featured: false,
   },
   {
@@ -68,7 +68,7 @@ const mockEvents = [
     venue: "Business Center, 789 Bay Street",
     organizer: {
       name: "Toronto Young Professionals",
-      avatar: "/placeholder-logo.png",
+      avatar: "/toronto-professionals-logo.png",
       verified: false,
     },
     attendees: 89,
@@ -76,7 +76,7 @@ const mockEvents = [
     price: "Free",
     category: "Professional",
     tags: ["Career", "Mentorship", "Networking"],
-    image: "/placeholder.jpg",
+    image: "/career-mentorship.jpg",
     featured: true,
   },
   {
@@ -90,7 +90,7 @@ const mockEvents = [
     venue: "Olympic Park Cricket Grounds",
     organizer: {
       name: "Sydney Indian Sports Club",
-      avatar: "/placeholder-logo.png",
+      avatar: "/sports-club-logo.png",
       verified: true,
     },
     attendees: 234,
@@ -98,7 +98,7 @@ const mockEvents = [
     price: "$15",
     category: "Sports",
     tags: ["Cricket", "Tournament", "Sports"],
-    image: "/placeholder.jpg",
+    image: "/cricket-tournament.jpg",
     featured: false,
   },
   {
@@ -112,7 +112,7 @@ const mockEvents = [
     venue: "Hyde Park Community Center",
     organizer: {
       name: "London Food Enthusiasts",
-      avatar: "/placeholder-logo.png",
+      avatar: "/food-community-logo.png",
       verified: true,
     },
     attendees: 312,
@@ -120,7 +120,7 @@ const mockEvents = [
     price: "$20",
     category: "Food",
     tags: ["Food", "Festival", "Culture"],
-    image: "/placeholder.jpg",
+    image: "/indian-food-festival.jpg",
     featured: true,
   },
   {
@@ -134,7 +134,7 @@ const mockEvents = [
     venue: "Innovation Hub, DIFC",
     organizer: {
       name: "Dubai Entrepreneurs Network",
-      avatar: "/placeholder-logo.png",
+      avatar: "/entrepreneurs-logo.png",
       verified: true,
     },
     attendees: 78,
@@ -142,7 +142,7 @@ const mockEvents = [
     price: "Free",
     category: "Business",
     tags: ["Startup", "Pitch", "Investment"],
-    image: "/placeholder.jpg",
+    image: "/startup-pitch-night.jpg",
     featured: false,
   },
 ]

@@ -19,7 +19,7 @@ const mockEvent = {
   venue: "Tech Hub SF, 123 Market Street",
   organizer: {
     name: "Bay Area Tech Indians",
-    avatar: "/placeholder-logo.png",
+    avatar: "/tech-community-logo.png",
     verified: true,
     description: "Connecting Indian tech professionals in the Bay Area",
     members: 12500,
@@ -29,7 +29,7 @@ const mockEvent = {
   price: "Free",
   category: "Tech",
   tags: ["Networking", "Diwali", "Technology", "Innovation", "Culture"],
-  image: "/placeholder.jpg",
+  image: "/diwali-tech-mixer.jpg",
   featured: true,
   agenda: [
     { time: "6:00 PM", activity: "Registration & Welcome Drinks" },
@@ -43,12 +43,12 @@ const mockEvent = {
     {
       name: "Dr. Rajesh Kumar",
       title: "VP Engineering, Google",
-      avatar: "/indian-professional.jpg",
+      avatar: "/speaker-rajesh.png",
     },
     {
       name: "Priya Patel",
       title: "Founder, TechStart",
-      avatar: "/indian-woman-entrepreneur.png",
+      avatar: "/speaker-priya.png",
     },
   ],
 }

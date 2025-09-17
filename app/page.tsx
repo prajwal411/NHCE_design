@@ -18,13 +18,16 @@ import {
   Zap,
 } from "lucide-react"
 import Link from "next/link"
-import { motion } from "framer-motion"
+import { motion, LazyMotion, domAnimation, MotionConfig, useReducedMotion } from "framer-motion"
 import { useState, useEffect } from "react"
+import { LanguageSwitcher } from "@/components/language-switcher"
+import { Chatbot } from "@/components/chatbot"
+import { MouseTracker } from "@/components/mouse-tracker"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 60 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6 },
+  transition: { duration: 0.6, ease: "easeOut" },
 }
 
 const staggerContainer = {
@@ -36,13 +39,89 @@ const staggerContainer = {
 }
 
 const scaleOnHover = {
-  whileHover: { scale: 1.05 },
-  whileTap: { scale: 0.95 },
+  whileHover: {
+    scale: 1.05,
+    transition: { duration: 0.2, ease: "easeInOut" },
+  },
+  whileTap: {
+    scale: 0.95,
+    transition: { duration: 0.1 },
+  },
 }
+
+const buttonHover = {
+  whileHover: {
+    scale: 1.05,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+    transition: { duration: 0.2 },
+  },
+  whileTap: {
+    scale: 0.98,
+    transition: { duration: 0.1 },
+  },
+}
+
+const Sparkle = ({ delay = 0 }: { delay?: number }) => (
+  <motion.div
+    className="absolute w-1 h-1 bg-primary rounded-full"
+    initial={{ opacity: 0, scale: 0 }}
+    animate={{
+      opacity: [0, 1, 0],
+      scale: [0, 1, 0],
+      rotate: [0, 180, 360],
+    }}
+    transition={{
+      duration: 2,
+      delay,
+      repeat: Number.POSITIVE_INFINITY,
+      repeatDelay: Math.random() * 3,
+    }}
+    style={{
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+    }}
+  />
+)
+
+const BackgroundSparkles = ({ count = 14 }: { count?: number }) => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {Array.from({ length: count }).map((_, i) => (
+      <Sparkle key={i} delay={i * 0.2} />
+    ))}
+  </div>
+)
+
+const FloatingElements = ({ count = 5 }: { count?: number }) => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {Array.from({ length: count }).map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute w-2 h-2 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-full will-change-transform"
+        animate={{
+          x: [0, 100, 0],
+          y: [0, -100, 0],
+          rotate: [0, 360],
+          scale: [1, 1.5, 1],
+        }}
+        transition={{
+          duration: 10 + i * 2,
+          repeat: Number.POSITIVE_INFINITY,
+          delay: i * 1.5,
+          ease: "linear",
+        }}
+        style={{
+          left: `${Math.random() * 100}%`,
+          top: `${Math.random() * 100}%`,
+        }}
+      />
+    ))}
+  </div>
+)
 
 export default function HomePage() {
   const [memberCount, setMemberCount] = useState(50000)
   const [isVisible, setIsVisible] = useState(false)
+  const prefersReduced = useReducedMotion()
 
   useEffect(() => {
     setIsVisible(true)
@@ -53,47 +132,74 @@ export default function HomePage() {
   }, [])
 
   return (
-    <div className="min-h-screen bg-background">
+    <LazyMotion features={domAnimation}>
+      <MotionConfig reducedMotion="user" transition={{ type: "spring", stiffness: 140, damping: 18, mass: 0.9 }}>
+        <div className="min-h-screen bg-background relative overflow-hidden">
+          {!prefersReduced && <MouseTracker />}
+          {!prefersReduced && <BackgroundSparkles count={14} />}
+          {!prefersReduced && <FloatingElements count={5} />}
+
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50"
+        className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50 will-change-transform"
       >
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <motion.div className="flex items-center space-x-2" whileHover={{ scale: 1.05 }}>
-              <Globe className="h-8 w-8 text-primary" />
+            <motion.div
+              className="flex items-center space-x-2"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+              >
+                <Globe className="h-8 w-8 text-primary" />
+              </motion.div>
               <span className="text-2xl font-bold text-foreground">BharatVerse</span>
             </motion.div>
 
             <div className="hidden lg:flex items-center space-x-6">
-              {["Feed", "Map", "Events", "Guides", "Directory", "Forum"].map((item, index) => (
+              {[
+                { name: "Feed", href: "/feed" },
+                { name: "Map", href: "/map" },
+                { name: "Events", href: "/events" },
+                { name: "Guides", href: "#guides" },
+                { name: "Directory", href: "#directory" },
+                { name: "Forum", href: "#forum" },
+              ].map((item, index) => (
                 <motion.div
-                  key={item}
+                  key={item.name}
                   initial={{ opacity: 0, y: -20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                 >
-                  <Link
-                    href={
-                      item === "Feed"
-                        ? "/feed"
-                        : item === "Map"
-                          ? "/map"
-                          : item === "Events"
-                            ? "/events"
-                            : `#${item.toLowerCase()}`
-                    }
-                    className="text-muted-foreground hover:text-foreground transition-colors"
+                  <motion.div
+                    whileHover={{
+                      scale: 1.1,
+                      color: "hsl(var(--primary))",
+                      transition: { duration: 0.2 },
+                    }}
                   >
-                    {item}
-                  </Link>
+                    <Link
+                      href={item.href}
+                      className="text-muted-foreground hover:text-foreground transition-colors relative"
+                    >
+                      {item.name}
+                      <motion.div
+                        className="absolute -bottom-1 left-0 right-0 h-0.5 bg-primary will-change-transform"
+                        initial={{ scaleX: 0 }}
+                        whileHover={{ scaleX: 1 }}
+                      />
+                    </Link>
+                  </motion.div>
                 </motion.div>
               ))}
             </div>
 
             <div className="flex items-center space-x-4">
+              <LanguageSwitcher />
               <motion.div
                 className="relative hidden md:block"
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -101,16 +207,45 @@ export default function HomePage() {
                 transition={{ delay: 0.3 }}
               >
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search posts, users, events..." className="pl-10 w-64" />
+                <motion.div whileFocus={{ scale: 1.02 }}>
+                  <Input placeholder="Search posts, users, events..." className="pl-10 w-64" />
+                </motion.div>
               </motion.div>
-              <motion.div {...scaleOnHover}>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 },
+                }}
+                whileTap={{
+                  scale: 0.98,
+                  transition: { duration: 0.1 },
+                }}
+              >
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/auth/signin">Sign In</Link>
                 </Button>
               </motion.div>
-              <motion.div {...scaleOnHover}>
-                <Button size="sm" asChild>
-                  <Link href="/auth/signup">Join Now</Link>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 },
+                }}
+                whileTap={{
+                  scale: 0.98,
+                  transition: { duration: 0.1 },
+                }}
+              >
+                <Button size="sm" asChild className="relative overflow-hidden">
+                  <Link href="/auth/signup">
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20"
+                      animate={{ x: ["-100%", "100%"] }}
+                      transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, repeatDelay: 3 }}
+                    />
+                    <span className="relative z-10">Join Now</span>
+                  </Link>
                 </Button>
               </motion.div>
             </div>
@@ -118,22 +253,30 @@ export default function HomePage() {
         </div>
       </motion.nav>
 
-      <section className="py-20 px-4 overflow-hidden">
+      <section className="py-20 px-4 overflow-hidden relative">
         <div className="container mx-auto text-center">
           <div className="max-w-4xl mx-auto">
             <motion.h1
-              className="text-5xl md:text-7xl font-bold text-balance mb-6"
+              className="text-5xl md:text-7xl font-bold text-balance mb-6 relative"
               initial={{ opacity: 0, y: 100 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ delay: 0.1 }}
             >
-              Where India Connects.
+              <motion.span
+                animate={{
+                  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+                }}
+                transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                className="bg-gradient-to-r from-primary via-secondary to-primary bg-[length:200%_100%] bg-clip-text text-transparent"
+              >
+                Where India Connects.
+              </motion.span>
             </motion.h1>
             <motion.p
               className="text-xl text-muted-foreground text-pretty mb-8 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ delay: 0.2 }}
             >
               BharatVerse is your global gateway to the vibrant tapestry of Indian culture, innovation, and community.
               Share your story, find your people, and rediscover your roots.
@@ -143,16 +286,52 @@ export default function HomePage() {
               className="flex flex-col sm:flex-row gap-4 justify-center mb-8"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ delay: 0.3 }}
             >
-              <motion.div {...scaleOnHover}>
-                <Button size="lg" className="text-lg px-8" asChild>
-                  <Link href="/auth/signup">Join the Community</Link>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 },
+                }}
+                whileTap={{
+                  scale: 0.98,
+                  transition: { duration: 0.1 },
+                }}
+              >
+                <Button size="lg" className="text-lg px-8 relative overflow-hidden group" asChild>
+                  <Link href="/auth/signup">
+                    <motion.div
+                      className="absolute inset-0 bg-gradient-to-r from-primary/0 via-white/20 to-primary/0"
+                      animate={{ x: ["-100%", "100%"] }}
+                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, repeatDelay: 2 }}
+                    />
+                    <span className="relative z-10">Join the Community</span>
+                  </Link>
                 </Button>
               </motion.div>
-              <motion.div {...scaleOnHover}>
-                <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent" asChild>
-                  <Link href="/map">Explore the Map →</Link>
+              <motion.div
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 },
+                }}
+                whileTap={{
+                  scale: 0.98,
+                  transition: { duration: 0.1 },
+                }}
+              >
+                <Button variant="outline" size="lg" className="text-lg px-8 bg-transparent group" asChild>
+                  <Link href="/map">
+                    <span>Explore the Map</span>
+                    <motion.span
+                      animate={{ x: [0, 5, 0] }}
+                      transition={{ duration: 1.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                      className="ml-2"
+                    >
+                      →
+                    </motion.span>
+                  </Link>
                 </Button>
               </motion.div>
             </motion.div>
@@ -164,9 +343,13 @@ export default function HomePage() {
               animate="animate"
             >
               {["Share Your Experience", "Post a Question", "Join the Celebration"].map((text, index) => (
-                <motion.div key={text} variants={fadeInUp} {...scaleOnHover}>
-                  <Button variant="secondary" size="sm" asChild>
-                    <Link href={index === 2 ? "/events" : "/feed"}>{text}</Link>
+                <motion.div key={text} variants={fadeInUp}>
+                  <Button variant="secondary" size="sm" asChild className="group">
+                    <Link href={index === 2 ? "/events" : "/feed"}>
+                      <motion.span whileHover={{ scale: 1.1 }} transition={{ duration: 0.2 }}>
+                        {text}
+                      </motion.span>
+                    </Link>
                   </Button>
                 </motion.div>
               ))}
@@ -176,12 +359,12 @@ export default function HomePage() {
       </section>
 
       <motion.section
-        className="py-16 px-4 bg-card/30"
+        className="py-16 px-4 bg-card/30 relative"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
       >
+        {!prefersReduced && <BackgroundSparkles count={10} />}
         <div className="container mx-auto">
           <motion.div
             className="text-center mb-8"
@@ -209,11 +392,33 @@ export default function HomePage() {
               <motion.div
                 key={stat.label}
                 variants={fadeInUp}
-                whileHover={{ scale: 1.05 }}
-                className="p-4 rounded-lg bg-background/50"
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                  transition: { duration: 0.2 },
+                }}
+                className="p-4 rounded-lg bg-background/50 cursor-pointer group"
               >
-                <stat.icon className="h-8 w-8 text-primary mx-auto mb-2" />
-                <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Number.POSITIVE_INFINITY,
+                    delay: index * 0.5,
+                  }}
+                >
+                  <stat.icon className="h-8 w-8 text-primary mx-auto mb-2" />
+                </motion.div>
+                <motion.div
+                  className="text-3xl font-bold text-primary mb-2"
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: index * 0.3 }}
+                >
+                  {stat.value}
+                </motion.div>
                 <div className="text-muted-foreground">{stat.label}</div>
               </motion.div>
             ))}
@@ -226,8 +431,7 @@ export default function HomePage() {
         className="py-20 px-4"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
       >
         <div className="container mx-auto">
           <motion.div
@@ -291,8 +495,7 @@ export default function HomePage() {
         className="py-20 px-4"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
       >
         <div className="container mx-auto">
           <motion.div
@@ -388,8 +591,8 @@ export default function HomePage() {
       <section className="py-20 px-4 bg-card/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-balance mb-4">See What's Happening in the Community</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-balance mb-6">See What's Happening in the Community</h2>
+            <p className="text-xl text-muted-foreground mb-8">
               Get a glimpse of the stories, conversations, and connections being made right now on BharatVerse.
             </p>
           </div>
@@ -468,8 +671,7 @@ export default function HomePage() {
         className="py-20 px-4 bg-card/30"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
       >
         <div className="container mx-auto">
           <motion.div
@@ -702,8 +904,7 @@ export default function HomePage() {
         className="py-20 px-4"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+        viewport={{ once: true, margin: "-100px" }}
       >
         <div className="container mx-auto text-center">
           <div className="max-w-3xl mx-auto">
@@ -862,6 +1063,10 @@ export default function HomePage() {
           </div>
         </div>
       </footer>
+
+      <Chatbot />
     </div>
+      </MotionConfig>
+    </LazyMotion>
   )
 }

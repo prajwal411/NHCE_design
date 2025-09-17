@@ -33,7 +33,7 @@ const mockPosts = [
     },
     content:
       "Just attended an incredible Diwali celebration in the Bay Area! The energy was amazing and it felt like being back home in Mumbai. So grateful for this wonderful community that keeps our traditions alive. The rangoli competition was fierce! 🪔✨",
-    image: "/placeholder.jpg",
+    image: "/diwali-celebration.jpg",
     timestamp: "2 hours ago",
     likes: 124,
     comments: 18,
@@ -79,13 +79,13 @@ const mockPosts = [
     id: 4,
     author: {
       name: "Vikram Patel",
-      avatar: "/indian-professional-man.png",
+      avatar: "/indian-professional-tech.png",
       location: "Sydney, Australia",
       verified: false,
     },
     content:
       "Organizing a cricket tournament for the Indian community in Sydney next month! We have 8 teams registered already. Looking for more players and sponsors. Let's bring the spirit of cricket down under! 🏏",
-    image: "/placeholder.jpg",
+    image: "/cricket-tournament.jpg",
     timestamp: "8 hours ago",
     likes: 156,
     comments: 34,
@@ -97,7 +97,7 @@ const mockPosts = [
     id: 5,
     author: {
       name: "Meera Reddy",
-      avatar: "/indian-woman-professional.png",
+      avatar: "/indian-classical-dancer.png",
       location: "Dubai, UAE",
       verified: true,
     },
